@@ -1,10 +1,7 @@
 package ru.sbt.i9n.o11n.fluent;
 
 import ru.sbt.i9n.o11n.fluent.impl.MapContext;
-import ru.sbt.i9n.o11n.fluent.impl.state.FinishState;
-import ru.sbt.i9n.o11n.fluent.impl.state.MapState;
-import ru.sbt.i9n.o11n.fluent.impl.state.RouterState;
-import ru.sbt.i9n.o11n.fluent.impl.state.StartState;
+import ru.sbt.i9n.o11n.fluent.impl.state.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +39,7 @@ public class FluentFSM {
         return out;
     }
 
-    public static class FluentFSMBuilder<T> {
+    public static class FluentFSMBuilder {
         private final List<State> states = new ArrayList<>();
 
         public FluentFSMBuilder start(String nextState) {
@@ -57,6 +54,11 @@ public class FluentFSM {
 
         public FluentFSMBuilder route(String name, StateDecider decider) {
             states.add(new RouterState<>(name, decider));
+            return this;
+        }
+
+        public FluentFSMBuilder httpCall(String name, String next, String uri, HttpGetState.CallbackHandler callbackHandler) {
+            states.add(new HttpGetState(name, next, uri, callbackHandler));
             return this;
         }
 
