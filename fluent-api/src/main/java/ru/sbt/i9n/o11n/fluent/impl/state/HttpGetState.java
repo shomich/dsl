@@ -27,7 +27,7 @@ public class HttpGetState extends HttpCallState<String, String> {
             CodeAndResp codeAndResp = sendGet(uri);
             callbackHandler.onResponse(codeAndResp.code, codeAndResp.resp);
         } catch (Exception e) {
-            e.printStackTrace();
+            callbackHandler.onResponse(-1, e.toString());
         }
     }
 

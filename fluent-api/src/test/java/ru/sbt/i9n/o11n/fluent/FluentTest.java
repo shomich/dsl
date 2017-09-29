@@ -10,30 +10,6 @@ import ru.sbt.i9n.o11n.fluent.impl.state.HttpGetState;
  */
 public class FluentTest {
 
-//    Object startMessage = "start";
-//    ArrayList<State> states = new ArrayList<State>() {{
-//        add(new StartState<>("map"));
-//        add(new MapState<>("map", "route", new Mapper<String, String>() {
-//            @Override
-//            public String map(String in) {
-//                context().put("next", "finish");
-//                return in;
-//            }
-//
-//        }));
-//        add(new RouterState<>("route", new MessageDecider() {
-//            @Override
-//            public String next() {
-//                return context().get("next");
-//            }
-//        }));
-//        add(new FinishState());
-//    }};
-//
-//    Object out = executeScript(states, startMessage);
-//
-//        Assert.assertEquals(startMessage, out);
-
     @Test
     public void contextDeciderTest() {
         FluentFSM fsm = new FluentFSM.FluentFSMBuilder()
@@ -59,7 +35,6 @@ public class FluentTest {
                     }
                 })
                 .finish().build();
-
         MessageAndContext test = fsm.execute(new MessageAndContext<>("test", new MapContext()));
         Assert.assertEquals("test", test.getMessage());
     }
