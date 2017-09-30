@@ -39,30 +39,30 @@ public class FluentFSM {
         return out;
     }
 
-    public static class FluentFSMBuilder {
+    public static class FSMBaseState {
         private final List<State> states = new ArrayList<>();
 
-        public FluentFSMBuilder start(String nextState) {
+        public FSMBaseState start(String nextState) {
             states.add(new StartState<>(nextState));
             return this;
         }
 
-        public FluentFSMBuilder map(String name, String next, Map mapper) {
+        public FSMBaseState map(String name, String next, Map mapper) {
             states.add(new MapState<>(name, next, mapper));
             return this;
         }
 
-        public FluentFSMBuilder route(String name, StateDecider decider) {
+        public FSMBaseState route(String name, StateDecider decider) {
             states.add(new RouterState<>(name, decider));
             return this;
         }
 
-        public FluentFSMBuilder httpCall(String name, String next, String uri, HttpGetState.CallbackHandler callbackHandler) {
+        public FSMBaseState httpCall(String name, String next, String uri, HttpGetState.CallbackHandler callbackHandler) {
             states.add(new HttpGetState(name, next, uri, callbackHandler));
             return this;
         }
 
-        public FluentFSMBuilder finish() {
+        public FSMBaseState finish() {
             states.add(new FinishState());
             return this;
         }
@@ -71,4 +71,5 @@ public class FluentFSM {
             return new FluentFSM(states);
         }
     }
+
 }

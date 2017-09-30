@@ -12,7 +12,7 @@ public class FluentTest {
 
     @Test
     public void contextDeciderTest() {
-        FluentFSM fsm = new FluentFSM.FluentFSMBuilder()
+        FluentFSM fsm = new FluentFSM.FSMBaseState()
                 .start("map")
                 .map("map", "http", new Map<String, String>() {
                     @Override
@@ -34,6 +34,25 @@ public class FluentTest {
                         return messageAndContext.getContext().get("next");
                     }
                 })
+                .finish().build();
+        MessageAndContext test = fsm.execute(new MessageAndContext<>("test", new MapContext()));
+        Assert.assertEquals("test", test.getMessage());
+    }
+
+    @Test
+    public void contextDeciderTestLinear() {
+        FluentFSMLinear fsm = new FluentFSMLinear.FSMBaseStateLinear()
+                .start()
+                .map("map", in -> {
+                    Context context = in.getContext();
+                    context.put("next", "httpCall");
+                    return new MessageAndContext<>(in.getMessage(), context);
+                })
+                .label("httpCall")
+                .httpCall("http",
+                        "http://www.google.com/search?q=hui",
+                        (code, response) -> System.out.println("code: " + code + " resp: " + response))
+                .route("route", messageAndContext -> messageAndContext.getContext().get("next"))
                 .finish().build();
         MessageAndContext test = fsm.execute(new MessageAndContext<>("test", new MapContext()));
         Assert.assertEquals("test", test.getMessage());
