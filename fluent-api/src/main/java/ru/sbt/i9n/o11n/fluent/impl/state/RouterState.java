@@ -8,21 +8,19 @@ import ru.sbt.i9n.o11n.fluent.StateDecider;
  */
 public class RouterState<T> extends BaseState<T,T> {
 
-    private final StateDecider stateDecider;
+    private final StateDecider<T> stateDecider;
     private String nextState;
 
-    public RouterState(String name, StateDecider stateDecider) {
-        super(name, name);
+    public RouterState(StateDecider<T> stateDecider) {
         this.stateDecider = stateDecider;
     }
 
     @Override
     public void execute() {
         nextState = stateDecider.next(in());
-        System.out.println("execute " + name());
+        System.out.println("execute router: " + nextState);
     }
 
-    @Override
     public String nextState() {
         return nextState;
     }

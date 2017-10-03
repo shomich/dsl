@@ -12,7 +12,4 @@ public interface State<T, R> {
 
     MessageAndContext<R> out();
 
-    String name();
-
-    String nextState();
 }

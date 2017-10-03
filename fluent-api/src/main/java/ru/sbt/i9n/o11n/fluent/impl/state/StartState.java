@@ -7,14 +7,9 @@ import ru.sbt.i9n.o11n.fluent.MessageAndContext;
  */
 public class StartState<T> extends BaseState<T,T> {
 
-
-    public StartState(String nextState) {
-        super("start", nextState);
-    }
-
     @Override
     public void execute() {
-        System.out.println("execute " + name());
+        System.out.println("execute start");
     }
 
 

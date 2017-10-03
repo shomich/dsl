@@ -8,17 +8,16 @@ import ru.sbt.i9n.o11n.fluent.MessageAndContext;
  */
 public class MapState<T, R> extends BaseState<T,R> {
 
-    private final Map mapper;
+    private final Map<T, R> mapper;
     private MessageAndContext<R> out;
 
-    public MapState(String name, String nextState, Map mapper) {
-        super(name, nextState);
+    public MapState(Map<T, R> mapper) {
         this.mapper = mapper;
     }
 
     @Override
     public void execute() {
-        System.out.println("execute " + name());
+        System.out.println("execute mapper");
         this.out = mapper.map(in());
     }
 

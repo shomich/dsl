@@ -13,10 +13,10 @@ import java.net.URL;
 public class HttpGetState extends HttpCallState<String, String> {
     private final String USER_AGENT = "Mozilla/5.0";
     private final String uri;
-    private final CallbackHandler callbackHandler;
+    private final CallbackHandler<String, String> callbackHandler;
+    private MessageAndContext out;
 
-    public HttpGetState(String name, String nextState, String uri, CallbackHandler callbackHandler) {
-        super(name, nextState);
+    public HttpGetState(String uri, CallbackHandler<String, String> callbackHandler) {
         this.uri = uri;
         this.callbackHandler = callbackHandler;
     }
@@ -25,15 +25,15 @@ public class HttpGetState extends HttpCallState<String, String> {
     public void execute() {
         try {
             CodeAndResp codeAndResp = sendGet(uri);
-            callbackHandler.onResponse(codeAndResp.code, codeAndResp.resp);
+            out = callbackHandler.onResponse(codeAndResp.code, codeAndResp.resp, in());
         } catch (Exception e) {
-            callbackHandler.onResponse(-1, e.toString());
+            out = callbackHandler.onResponse(-1, e.toString(), in());
         }
     }
 
     @Override
     public MessageAndContext<String> out() {
-        return in();
+        return out;
     }
 
     private CodeAndResp sendGet(String url) throws Exception {
@@ -71,7 +71,4 @@ public class HttpGetState extends HttpCallState<String, String> {
         }
     }
 
-    public interface CallbackHandler {
-        void onResponse(int code, String response);
-    }
 }

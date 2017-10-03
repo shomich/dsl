@@ -7,13 +7,9 @@ import ru.sbt.i9n.o11n.fluent.MessageAndContext;
  */
 public class FinishState<T> extends BaseState<T,T> {
 
-    public FinishState() {
-        super("finish", "null");
-    }
-
     @Override
     public void execute() {
-        System.out.println("execute " + name());
+        System.out.println("execute finish");
     }
 
     @Override

@@ -22,15 +22,4 @@ public class EmptyState implements State {
         return null;
     }
 
-
-    @Override
-    public String name() {
-        return null;
-    }
-
-
-    @Override
-    public String nextState() {
-        return null;
-    }
 }

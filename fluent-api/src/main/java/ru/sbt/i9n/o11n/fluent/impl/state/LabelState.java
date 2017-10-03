@@ -6,13 +6,19 @@ import ru.sbt.i9n.o11n.fluent.MessageAndContext;
  * Created by SIGMA\sbt-galiullin-ts on 30.09.17.
  */
 public class LabelState extends BaseState {
-    public LabelState(String name, String nextState) {
-        super(name, nextState);
+    private final String name;
+
+    public LabelState(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
     public void execute() {
-        System.out.println("Execute label " + name());
+        System.out.println("Execute label " + name);
     }
 
     @Override

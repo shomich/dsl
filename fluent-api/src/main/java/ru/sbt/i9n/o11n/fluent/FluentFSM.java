@@ -1,6 +1,9 @@
 package ru.sbt.i9n.o11n.fluent;
 
-import ru.sbt.i9n.o11n.fluent.impl.MapContext;
+/**
+ * Created by SIGMA\sbt-galiullin-ts on 30.09.17.
+ */
+
 import ru.sbt.i9n.o11n.fluent.impl.state.*;
 
 import java.util.ArrayList;
@@ -13,56 +16,69 @@ import java.util.List;
 public class FluentFSM {
 
 
-    private final java.util.Map<String, State> stateMap = new HashMap<>();
-    private final State start;
+    private final java.util.Map<String, Integer> stateMap = new HashMap<>();
+    private final List<State> states;
 
     private FluentFSM(List<State> states) {
-        for (State state : states) {
-            stateMap.put(state.name(), state);
+        this.states = states;
+        for (int i = 0; i < states.size(); i++) {
+            State state = states.get(i);
+            if (state instanceof LabelState) {
+                stateMap.put(((LabelState) state).getName(), i);
+            }
         }
-        start = stateMap.get("start");
+
     }
 
     public MessageAndContext execute(MessageAndContext input) {
-        State current = start;
+        State current = states.get(0);
         State previous = current;
         MessageAndContext out = input;
-        Context context = new MapContext();
-        while (current != null
-                && !(previous instanceof FinishState)) {
+        int i = 0;
+        while (!(previous instanceof FinishState)) {
+            if (previous instanceof RouterState) {
+                i = stateMap.get(((RouterState) previous).nextState()) + 1; //plus 1 to skip label an go forward
+            }
+            current = states.get(i++);
             current.setIn(out);
             current.execute();
             out = current.out();
             previous = current;
-            current = stateMap.get(current.nextState());
         }
+
         return out;
     }
 
-    public static class FSMBaseState {
+    public static class FSMBaseStateLinear {
         private final List<State> states = new ArrayList<>();
 
-        public FSMBaseState start(String nextState) {
-            states.add(new StartState<>(nextState));
+        public FSMBaseStateLinear start() {
+            states.add(new StartState<>());
             return this;
         }
 
-        public FSMBaseState map(String name, String next, Map mapper) {
-            states.add(new MapState<>(name, next, mapper));
+        public <T, R> FSMBaseStateLinear map(Map<T, R> mapper) {
+            states.add(new MapState<>(mapper));
             return this;
         }
 
-        public FSMBaseState route(String name, StateDecider decider) {
-            states.add(new RouterState<>(name, decider));
+        public <T> FSMBaseStateLinear route(StateDecider<T> decider) {
+            states.add(new RouterState<>(decider));
             return this;
         }
 
-        public FSMBaseState httpCall(String name, String next, String uri, HttpGetState.CallbackHandler callbackHandler) {
-            states.add(new HttpGetState(name, next, uri, callbackHandler));
+        public FSMBaseStateLinear httpCall(String uri, HttpGetState.CallbackHandler<String, String> callbackHandler) {
+            states.add(new HttpGetState(uri, callbackHandler));
             return this;
         }
 
-        public FSMBaseState finish() {
+        public FSMBaseStateLinear label(String name) {
+            states.add(new LabelState(name));
+            return this;
+        }
+
+        public FSMBaseStateLinear finish() {
+            states.add(new LabelState("finish"));
             states.add(new FinishState());
             return this;
         }
@@ -71,5 +87,4 @@ public class FluentFSM {
             return new FluentFSM(states);
         }
     }
-
 }
