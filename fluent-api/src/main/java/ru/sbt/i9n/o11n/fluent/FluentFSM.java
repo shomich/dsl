@@ -77,6 +77,11 @@ public class FluentFSM {
             return this;
         }
 
+        public FSMBaseStateLinear mmtCall(Class<?> api, String methodName, Object... args) {
+            states.add(new MMTCallState<>(api, methodName, args));
+            return this;
+        }
+
         public FSMBaseStateLinear finish() {
             states.add(new LabelState("finish"));
             states.add(new FinishState());

@@ -26,9 +26,10 @@ public class FluentTest {
                                 in.getContext().put("next", "lastMap");
                             return in;
                         })
+                .mmtCall(String.class, "compareTo", "test")
                 .route(messageAndContext -> messageAndContext.getContext().get("next"))
                 .label("lastMap")
-                .<String, Integer>map(in -> new MessageAndContext<>(1, in.getContext()))
+//                .<String, Integer>map(in -> new MessageAndContext<>(1, in.getContext()))
                 .finish().build();
         MessageAndContext test = fsm.execute(new MessageAndContext<>("test", new MapContext()));
         Assert.assertEquals(1, test.getMessage());
