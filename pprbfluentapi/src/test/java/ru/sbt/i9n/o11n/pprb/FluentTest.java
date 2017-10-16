@@ -1,7 +1,10 @@
-package ru.sbt.i9n.o11n.fluent;
+package ru.sbt.i9n.o11n.pprb;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ru.sbt.i9n.o11n.fluent.Context;
+import ru.sbt.i9n.o11n.fluent.FluentFSM;
+import ru.sbt.i9n.o11n.fluent.MessageAndContext;
 import ru.sbt.i9n.o11n.fluent.impl.MapContext;
 
 /**
@@ -11,7 +14,7 @@ public class FluentTest {
 
     @Test
     public void contextDeciderTestLinear() {
-        FluentFSM fsm = new FluentFSM.FSMBaseStateLinear()
+        FluentFSM fsm = new PPRBFluentFSM.PPRBFluentFSMBuilder()
                 .start()
                 .<String, String>map(in -> {
                     Context context = in.getContext();
@@ -27,6 +30,7 @@ public class FluentTest {
                                 in.getContext().put("next", "lastMap");
                             return in;
                         })
+
 //                .mmtCall(Integer.class, (Integer s) -> s.intValue() )
                 .route(messageAndContext -> messageAndContext.getContext().get("next"))
                 .label("lastMap")

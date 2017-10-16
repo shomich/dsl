@@ -9,6 +9,7 @@ import ru.sbt.i9n.o11n.fluent.impl.state.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by timmy on 17/09/17.
@@ -19,7 +20,7 @@ public class FluentFSM {
     private final java.util.Map<String, Integer> stateMap = new HashMap<>();
     private final List<State> states;
 
-    private FluentFSM(List<State> states) {
+    protected FluentFSM(List<State> states) {
         this.states = states;
         for (int i = 0; i < states.size(); i++) {
             State state = states.get(i);
@@ -52,6 +53,10 @@ public class FluentFSM {
     public static class FSMBaseStateLinear {
         private final List<State> states = new ArrayList<>();
 
+        protected List<State> getStates() {
+            return states;
+        }
+
         public FSMBaseStateLinear start() {
             states.add(new StartState<>());
             return this;
@@ -77,10 +82,10 @@ public class FluentFSM {
             return this;
         }
 
-        public FSMBaseStateLinear mmtCall(Class<?> api, String methodName, Object... args) {
-            states.add(new MMTCallState<>(api, methodName, args));
-            return this;
-        }
+//        public <T, R> FSMBaseStateLinear mmtCall(Class<T> api, Function<T, R> function) {
+//            states.add(new MMTCallState<>(api, function));
+//            return this;
+//        }
 
         public FSMBaseStateLinear finish() {
             states.add(new LabelState("finish"));
