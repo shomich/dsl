@@ -7,7 +7,7 @@ public class MMTApiFactory {
 
     public <T> T getApi(Class<T> api) {
         try {
-            return (T) api.getClass().newInstance();
+            return api.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

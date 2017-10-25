@@ -14,9 +14,20 @@ public class PPRBFluentFSM extends FluentFSM {
         super(states);
     }
 
-    public static class PPRBFluentFSMBuilder extends FSMBaseStateLinear {
-        public <T, R> FSMBaseStateLinear mmtCall(Class<T> api, Function<T, R> function) {
-            getStates().add(new MMTCallState<>(api, function));
+    public static class PPRBFluentFSMBuilder extends FSMBaseStateLinear<PPRBFluentFSMBuilder> {
+
+        private final MMTApiFactory mmtApiFactory;
+
+        public PPRBFluentFSMBuilder() {
+            mmtApiFactory = new MMTApiFactory();
+        }
+
+        public PPRBFluentFSMBuilder(MMTApiFactory mmtApiFactory) {
+            this.mmtApiFactory = mmtApiFactory;
+        }
+
+        public <T, R> PPRBFluentFSMBuilder mmtCall(Class<T> api, Function<T, R> function) {
+            getStates().add(new MMTCallState<>(mmtApiFactory, api, function));
             return this;
         }
     }

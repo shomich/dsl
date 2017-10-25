@@ -50,36 +50,36 @@ public class FluentFSM {
         return out;
     }
 
-    public static class FSMBaseStateLinear {
+    public static class FSMBaseStateLinear<T extends FSMBaseStateLinear<T>> {
         private final List<State> states = new ArrayList<>();
 
         protected List<State> getStates() {
             return states;
         }
 
-        public FSMBaseStateLinear start() {
+        public T start() {
             states.add(new StartState<>());
-            return this;
+            return (T)this;
         }
 
-        public <T, R> FSMBaseStateLinear map(Map<T, R> mapper) {
+        public <Q, R> T map(Map<Q, R> mapper) {
             states.add(new MapState<>(mapper));
-            return this;
+            return (T)this;
         }
 
-        public <T> FSMBaseStateLinear route(StateDecider<T> decider) {
+        public <Q> T route(StateDecider<Q> decider) {
             states.add(new RouterState<>(decider));
-            return this;
+            return (T)this;
         }
 
-        public FSMBaseStateLinear httpCall(String uri, HttpGetState.CallbackHandler<String, String> callbackHandler) {
+        public T httpCall(String uri, HttpGetState.CallbackHandler<String, String> callbackHandler) {
             states.add(new HttpGetState(uri, callbackHandler));
-            return this;
+            return (T)this;
         }
 
-        public FSMBaseStateLinear label(String name) {
+        public T label(String name) {
             states.add(new LabelState(name));
-            return this;
+            return (T)this;
         }
 
 //        public <T, R> FSMBaseStateLinear mmtCall(Class<T> api, Function<T, R> function) {
@@ -87,10 +87,10 @@ public class FluentFSM {
 //            return this;
 //        }
 
-        public FSMBaseStateLinear finish() {
+        public T finish() {
             states.add(new LabelState("finish"));
             states.add(new FinishState());
-            return this;
+            return (T)this;
         }
 
         public FluentFSM build() {

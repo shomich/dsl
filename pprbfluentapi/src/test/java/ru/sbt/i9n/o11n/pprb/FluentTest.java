@@ -14,7 +14,7 @@ public class FluentTest {
 
     @Test
     public void contextDeciderTestLinear() {
-        FluentFSM fsm = new PPRBFluentFSM.PPRBFluentFSMBuilder()
+        FluentFSM fsm = new PPRBFluentFSM.PPRBFluentFSMBuilder(new IntegerApiFactory())
                 .start()
                 .<String, String>map(in -> {
                     Context context = in.getContext();
@@ -31,12 +31,18 @@ public class FluentTest {
                             return in;
                         })
 
-//                .mmtCall(Integer.class, (Integer s) -> s.intValue() )
+                .mmtCall(Integer.class, (Integer s) -> s.intValue() )
                 .route(messageAndContext -> messageAndContext.getContext().get("next"))
                 .label("lastMap")
-//                .<String, Integer>map(in -> new MessageAndContext<>(1, in.getContext()))
                 .finish().build();
         MessageAndContext test = fsm.execute(new MessageAndContext<>("test", new MapContext()));
-        Assert.assertEquals("resp", test.getMessage());
+        Assert.assertEquals(0, test.getMessage());
+    }
+
+    private static class IntegerApiFactory extends MMTApiFactory {
+        @Override
+        public <T> T getApi(Class<T> api) {
+            return (T)new Integer(0);
+        }
     }
 }

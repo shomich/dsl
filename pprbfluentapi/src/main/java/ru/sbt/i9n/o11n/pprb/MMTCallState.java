@@ -10,19 +10,21 @@ import java.util.function.Function;
  */
 public class MMTCallState<T, R> extends BaseState<T, R> {
 
+    private final MMTApiFactory mmtApiFactory;
     private final Class<T> mmtApi;
     private final Function<T, R> methodCall;
     private R result;
 
-    public MMTCallState(Class<T> api, Function<T, R> function) {
+    public MMTCallState(MMTApiFactory mmtApiFactory, Class<T> api, Function<T, R> function) {
+        this.mmtApiFactory = mmtApiFactory;
         mmtApi = api;
         methodCall = function;
     }
 
     @Override
     public void execute() {
-        T apiImpl = new MMTApiFactory().getApi(mmtApi);
-        methodCall.apply(apiImpl);
+        T apiImpl = mmtApiFactory.getApi(mmtApi);
+        result = methodCall.apply(apiImpl);
     }
 
     @Override
